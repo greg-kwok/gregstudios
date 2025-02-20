@@ -40,6 +40,7 @@
 </head>
 <body>
     <h1>Photo Booth</h1>
+    <div id="mobile-message">Use on computer to access filters💻</div>
     <div id="container">
         <div id="video-container">
             <video id="video" autoplay></video>
@@ -70,17 +71,19 @@
         // Hide filter buttons on mobile
         function hideFiltersOnMobile() {
             const filterControls = document.getElementById('filter-controls');
+            const mobileMessage = document.getElementById('mobile-message');
             if (isMobile()) {
                 filterControls.style.display = 'none'; // Hide filter controls on mobile
+                mobileMessage.style.display = 'block'; // Show mobile message
             } else {
                 filterControls.style.display = 'flex'; // Show filter controls on desktop
+                mobileMessage.style.display = 'none'; // Hide mobile message
             }
         }
 
         // Call the function when the page loads and whenever the window is resized
         window.addEventListener('load', hideFiltersOnMobile);
         window.addEventListener('resize', hideFiltersOnMobile);
-        
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
@@ -97,7 +100,6 @@
         function applyFilter(filter) {
             currentFilter = filter;
             video.style.filter = currentFilter;
-            canvas.style.filter = currentFilter;
         }
         
         function countdown(seconds, callback) {
