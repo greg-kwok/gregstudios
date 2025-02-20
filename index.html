@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Booth</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #F0EAD6; }
+        #container { display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 0px; }
+        #video-container { position: relative; display: flex; flex-direction: column; align-items: center; }
+        #controls { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
+        #photo-strip { display: flex; flex-direction: row; justify-content: center; margin-top: 20px; }
+        video { width: 640px; height: 480px; transform: scaleX(-1); }
+        .photo { width: 160px; height: 120px; border: 5px solid white; margin: 0px; padding: 5px; background-color: white; position: relative; }
+        button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
+        #countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 72px;
+            font-weight: bold;
+            color: rgba(255, 0, 0, 0.607);
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Photo Booth</h1>
+    <div id="container">
+        <div id="video-container">
+            <video id="video" autoplay></video>
+            <div id="countdown"></div>
+            <div id="controls">
+                <button onclick="startCapture()">Start Capture</button>
+            </div>
+        </div>
+        <div id="photo-strip"></div>
+    </div>
+    <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+    
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const photoStrip = document.getElementById('photo-strip');
+        const countdownEl = document.getElementById('countdown');
+        let photos = [];
+        
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => video.srcObject = stream)
+            .catch(err => console.error("Camera access denied", err));
+        
+        function countdown(seconds, callback) {
+            countdownEl.innerText = seconds;
+            if (seconds > 0) {
+                setTimeout(() => countdown(seconds - 1, callback), 1000);
+            } else {
+                countdownEl.innerText = '';
+                callback();
+            }
+        }
+        
+        function capturePhoto() {
+            if (photos.length >= 4) return;
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
+            
+            const img = new Image();
+            img.src = canvas.toDataURL('image/png');
+            img.classList.add('photo');
+            photoStrip.appendChild(img);
+            photos.push(img);
+            
+            if (photos.length === 4) {
+                const watermark = new Image();
+                watermark.src = "greg_studios©.png";
+                photos.push(watermark);
+                setTimeout(() => goToFrameEditor(), 1000);
+            }
+        }
+        
+        function startCapture() {
+            photos = [];
+            photoStrip.innerHTML = '';
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => countdown(3, capturePhoto), i * 5000);
+            }
+        }
+        
+        function goToFrameEditor() {
+            localStorage.setItem('photos', JSON.stringify(photos.map(img => img.src)));
+            window.location.href = 'frame-editor.html';
+        }
+    </script>
+</body>
+</html>

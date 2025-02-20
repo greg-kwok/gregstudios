@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame Editor</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #F0EAD6; }
+        #frame-preview { display: flex; flex-direction: column; align-items: center; background-color: #F0EAD6; padding: 20px; }
+        .photo { width: 320px; border: 15px solid white; margin: 0px; padding: 0px; background-color: white; }
+        button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Frame Editor</h1>
+    <div>
+        <label for="colorPicker">Pick a frame color:</label>
+        <input type="color" id="colorPicker" value="#FFFFFF" onchange="changeFrameColor(this.value)">
+    </div>
+    <button onclick="downloadStrip()">Save</button>
+    <button onclick="retakePhotos()">Retake</button>
+    <div id="frame-preview"></div>
+    <br>
+    
+    <script>
+        let frameColor = '#FFFFFF'; // Default to white
+        const framePreview = document.getElementById('frame-preview');
+        const photos = JSON.parse(localStorage.getItem('photos')) || [];
+
+        function loadPhotos() {
+            framePreview.innerHTML = '';
+            photos.forEach(src => {
+                const img = new Image();
+                img.src = src;
+                img.classList.add('photo');
+                img.style.borderColor = frameColor;
+                img.style.backgroundColor = frameColor;
+                framePreview.appendChild(img);
+            });
+        }
+
+        function changeFrameColor(color) {
+            frameColor = color;
+            document.querySelectorAll('.photo').forEach(img => {
+                img.style.borderColor = color;
+                img.style.backgroundColor = color;
+            });
+        }
+
+        function downloadStrip() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const width = 350; // Include border width
+            const height = 1180; // Total height 
+            canvas.width = width;
+            canvas.height = height;
+
+            let loadedImages = 0;
+
+            photos.forEach((src, index) => {
+                const img = new Image();
+                img.src = src;
+                img.onload = function() {
+                    const imageAspectRatio = img.width / img.height;
+                    const imageHeight = 320 / imageAspectRatio; // Scale the height proportionally based on width (320px)
+
+                    ctx.fillStyle = frameColor;
+                    ctx.fillRect(0, index * 270, width, 270);
+                    ctx.drawImage(img, 15, index * 270 + 15, 320, imageHeight);
+
+                    loadedImages++;
+                    if (loadedImages === photos.length) {
+                        const link = document.createElement('a');
+                        link.download = 'photo-strip.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    }
+                };
+            });
+        }
+
+
+        function retakePhotos() {
+            localStorage.removeItem('photos');
+            window.location.href = 'index.html';
+        }
+
+        loadPhotos();
+    </script>
+</body>
+</html>
