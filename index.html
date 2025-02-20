@@ -62,6 +62,25 @@
     <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
     
     <script>
+        // Check if the device is mobile (screen width <= 768px)
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        // Hide filter buttons on mobile
+        function hideFiltersOnMobile() {
+            const filterControls = document.getElementById('filter-controls');
+            if (isMobile()) {
+                filterControls.style.display = 'none'; // Hide filter controls on mobile
+            } else {
+                filterControls.style.display = 'flex'; // Show filter controls on desktop
+            }
+        }
+
+        // Call the function when the page loads and whenever the window is resized
+        window.addEventListener('load', hideFiltersOnMobile);
+        window.addEventListener('resize', hideFiltersOnMobile);
+        
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
