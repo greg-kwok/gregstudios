@@ -10,7 +10,7 @@
         #video-container { position: relative; display: flex; flex-direction: column; align-items: center; }
         #controls { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
         #photo-strip { display: flex; flex-direction: row; justify-content: center; margin-top: 20px; }
-        video { width: 640px; height: 480px; transform: scaleX(-1); }
+        video { width: 640px; height: 480px; transform: scaleX(-1); border: 3px solid black; border-radius: 5px; }
         .photo { width: 160px; height: 120px; border: 5px solid white; margin: 0px; padding: 5px; background-color: white; position: relative; }
         button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
         #countdown {
@@ -24,6 +24,18 @@
             padding: 20px;
             border-radius: 10px;
         }
+        .filter-btn {
+            padding: 8px 16px;
+            cursor: pointer;
+            margin: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .filter-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
     </style>
 </head>
 <body>
@@ -33,11 +45,20 @@
             <video id="video" autoplay></video>
             <div id="countdown"></div>
             <div id="controls">
-                <button onclick="startCapture()">Start Capture</button>
+                <div id="filter-controls">
+                    <button class="filter-btn" onclick="applyFilter('none')">Normal</button>
+                    <button class="filter-btn" onclick="applyFilter('brightness(150%)')">Ring Light</button>
+                    <button class="filter-btn" onclick="applyFilter('contrast(150%)')">Contrast</button>
+                    <button class="filter-btn" onclick="applyFilter('grayscale(100%)')">Grayscale</button>
+                    <button class="filter-btn" onclick="applyFilter('sepia(100%)')">Sepia</button>
+                    <button class="filter-btn" onclick="applyFilter('invert(100%)')">Invert</button>
+                    <button class="filter-btn" onclick="applyFilter('saturate(250%)')">Childhood</button>
+                    <button class="filter-btn" onclick="applyFilter('hue-rotate(90deg)')">Hulk</button>
+                </div>
+                <button id="capture" onclick="startCapture()">Start Capture</button>
             </div>
+            <div id="photo-strip"></div>
         </div>
-        <div id="photo-strip"></div>
-    </div>
     <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
     
     <script>
@@ -47,10 +68,17 @@
         const photoStrip = document.getElementById('photo-strip');
         const countdownEl = document.getElementById('countdown');
         let photos = [];
+        let currentFilter = 'none';  // Default filter
         
         navigator.mediaDevices.getUserMedia({ video: true })
             .then(stream => video.srcObject = stream)
             .catch(err => console.error("Camera access denied", err));
+        
+        // Apply selected filter to the video stream
+        function applyFilter(filter) {
+            currentFilter = filter;
+            video.style.filter = currentFilter;
+        }
         
         function countdown(seconds, callback) {
             countdownEl.innerText = seconds;
@@ -64,18 +92,25 @@
         
         function capturePhoto() {
             if (photos.length >= 4) return;
+            
+            // Apply the selected filter to the canvas context before drawing the photo
+            ctx.filter = currentFilter;
             ctx.save();
-            ctx.translate(canvas.width, 0);
+            ctx.translate(canvas.width, 0); // Flip image horizontally
             ctx.scale(-1, 1);
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             ctx.restore();
             
+            // Capture the image from the canvas with the applied filter
             const img = new Image();
             img.src = canvas.toDataURL('image/png');
             img.classList.add('photo');
             photoStrip.appendChild(img);
             photos.push(img);
             
+            // Reset the filter for future captures
+            ctx.filter = 'none';
+
             if (photos.length === 4) {
                 const watermark = new Image();
                 watermark.src = "greg_studios©.png";
@@ -85,6 +120,7 @@
         }
         
         function startCapture() {
+            document.getElementById('capture').style.display = 'none';
             photos = [];
             photoStrip.innerHTML = '';
             for (let i = 0; i < 4; i++) {
