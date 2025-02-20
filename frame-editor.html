@@ -6,8 +6,8 @@
     <title>Frame Editor</title>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; background-color: #F0EAD6; }
-        #frame-preview { display: flex; flex-direction: column; align-items: center; background-color: #F0EAD6; padding: 20px; }
-        .photo { width: 320px; border: 15px solid white; margin: 0px; padding: 0px; background-color: white; }
+        #frame-preview { display: flex; flex-direction: column; align-items: center; background-color: #F0EAD6; }
+        .photo { width: 320px; border: 15px solid white; margin: 0px; padding: 0px; background-color: white;  }
         button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
     </style>
 </head>
@@ -17,8 +17,8 @@
         <label for="colorPicker">Pick a frame color:</label>
         <input type="color" id="colorPicker" value="#FFFFFF" onchange="changeFrameColor(this.value)">
     </div>
-    <button onclick="downloadStrip()">Save</button>
-    <button onclick="retakePhotos()">Retake</button>
+    <button onclick="downloadStrip()">📥Download</button>
+    <button onclick="retakePhotos()">🔄Retake</button>
     <div id="frame-preview"></div>
     <br>
     
