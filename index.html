@@ -40,7 +40,7 @@
 </head>
 <body>
     <h1>Photo Booth</h1>
-    <div id="mobile-message">
+    <div id="mobile-message" style="display:none;">
         <div>Rotate phone to prevent distortion🔄</div>
         <div>Use on computer to access filters💻</div>
     </div>
@@ -49,7 +49,7 @@
             <video id="video" autoplay></video>
             <div id="countdown"></div>
             <div id="controls">
-                <div id="filter-controls">
+                <div id="filter-controls" style="display:none;">
                     <button class="filter-btn" onclick="applyFilter('none')">Normal</button>
                     <button class="filter-btn" onclick="applyFilter('brightness(150%)')">Ring Light</button>
                     <button class="filter-btn" onclick="applyFilter('contrast(150%)')">Contrast</button>
