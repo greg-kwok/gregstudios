@@ -7,10 +7,8 @@
     <style>
         body { text-align: center; font-family: Arial, sans-serif; background-color: #F0EAD6; }
         #frame-preview { display: flex; flex-direction: column; align-items: center; background-color: #F0EAD6; }
-        .photo { width: 320px; border: 15px solid white; margin: 0px; padding: 0px; background-color: white; }
+        .photo { width: 320px; border: 15px solid white; margin: 0px; padding: 0px; background-color: white;  }
         button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
-        #email-container { margin-top: 20px; }
-        input[type="email"] { padding: 10px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc; width: 250px; }
     </style>
 </head>
 <body>
@@ -22,14 +20,10 @@
     <button onclick="downloadStrip()">📥Download</button>
     <button onclick="retakePhotos()">🔄Retake</button>
     <div id="frame-preview"></div>
-
-    <div id="email-container">
-        <input type="email" id="emailInput" placeholder="Enter email address">
-        <button onclick="sendEmail()">📤 Send</button>
-    </div>
-
+    <br>
+    
     <script>
-        let frameColor = '#FFFFFF';
+        let frameColor = '#FFFFFF'; // Default to white
         const framePreview = document.getElementById('frame-preview');
         const photos = JSON.parse(localStorage.getItem('photos')) || [];
 
@@ -53,11 +47,11 @@
             });
         }
 
-        function generatePhotoStrip(callback) {
+        function downloadStrip() {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            const width = 350;
-            const height = 1180;
+            const width = 350; // Include border width
+            const height = 1180; // Total height 
             canvas.width = width;
             canvas.height = height;
 
@@ -67,36 +61,24 @@
                 const img = new Image();
                 img.src = src;
                 img.onload = function() {
+                    const imageAspectRatio = img.width / img.height;
+                    const imageHeight = 320 / imageAspectRatio; // Scale the height proportionally based on width (320px)
+
                     ctx.fillStyle = frameColor;
                     ctx.fillRect(0, index * 270, width, 270);
-                    ctx.drawImage(img, 15, index * 270 + 15, 320, 240);
+                    ctx.drawImage(img, 15, index * 270 + 15, 320, imageHeight);
 
                     loadedImages++;
                     if (loadedImages === photos.length) {
-                        callback(canvas.toDataURL('image/png'));
+                        const link = document.createElement('a');
+                        link.download = 'photo-strip.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
                     }
                 };
             });
         }
 
-        function sendEmail() {
-            const email = document.getElementById('emailInput').value;
-            if (!email) {
-                alert("Please enter a valid email address.");
-                return;
-            }
-
-            generatePhotoStrip((imageData) => {
-                fetch('https://gregstudios-production.up.railway.app/send-email', { // REPLACE THIS WITH YOUR BACKEND URL
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, image: imageData })
-                })
-                .then(response => response.json())
-                .then(data => alert(data.message))
-                .catch(error => console.error('Error:', error));
-            });
-        }
 
         function retakePhotos() {
             localStorage.removeItem('photos');
