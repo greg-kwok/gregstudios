@@ -87,7 +87,7 @@
             }
 
             generatePhotoStrip((imageData) => {
-                fetch('https://gregstudios-production.up.railway.app', { // REPLACE THIS WITH YOUR BACKEND URL
+                fetch('https://gregstudios-production.up.railway.app/send-email', { // REPLACE THIS WITH YOUR BACKEND URL
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email, image: imageData })
