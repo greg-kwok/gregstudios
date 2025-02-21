@@ -20,7 +20,7 @@
     </div>
     <button onclick="downloadStrip()">📥Download</button>
     <button onclick="retakePhotos()">🔄Retake</button>
-    <button id="QrButton" onclick="generateQRCode()" style="display: inline-block;">#️⃣Generate QR Code</button>
+    <button id="QrButton" onclick="generateQRCode()" style="display: inline-block;">#️⃣Generate QR Code to Save to Phone</button>
     <div id="qr-code-container"></div>
     <div id="frame-preview"></div>
 
@@ -156,7 +156,7 @@
         }
 
         function generateQRCode() {
-            document.getElementById('qr-code-container').innerHTML = '';
+            document.getElementById('qr-code-container').innerHTML = 'Generating...⌛';
 
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
@@ -183,6 +183,7 @@
 
                         try {
                             const imageUrl = await uploadImageToImgur(imageDataURL);
+                            document.getElementById('qr-code-container').innerHTML = '';
                             new QRCode(document.getElementById('qr-code-container'), {
                                 text: imageUrl,
                                 width: 200,
