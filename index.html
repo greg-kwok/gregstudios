@@ -59,7 +59,7 @@
                     <button class="filter-btn" onclick="applyFilter('saturate(250%)')">Childhood</button>
                     <button class="filter-btn" onclick="applyFilter('hue-rotate(90deg)')">Hulk</button>
                 </div>
-                <button id="capture">Start Capture</button>
+                <button id="capture" onclick="startCapture()">Start Capture</button>
             </div>
             <div id="photo-strip"></div>
         </div>
@@ -99,16 +99,6 @@
             .then(stream => video.srcObject = stream)
             .catch(err => console.error("Camera access denied", err));
         
-        document.getElementById('capture').addEventListener('click', () => {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.play(); // Ensure the video plays
-                    startCapture(); // Start the capture process
-                })
-                .catch(err => console.error("Camera access denied", err));
-        });    
-
         // Apply selected filter to the video stream
         function applyFilter(filter) {
             currentFilter = filter;
