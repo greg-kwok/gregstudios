@@ -11,7 +11,7 @@
         #controls { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
         #photo-strip { display: flex; flex-direction: row; justify-content: center; margin-top: 20px; }
         video { width: 640px; height: 480px; transform: scaleX(-1); border: 3px solid black; border-radius: 5px; }
-        .photo { height: 120px; border: 5px solid white; margin: 0px; padding: 5px; background-color: white; position: relative; }
+        .photo { width: 160px; height: 120px; border: 5px solid white; margin: 0px; padding: 5px; background-color: white; position: relative; }
         button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
         #countdown {
             position: absolute;
@@ -41,7 +41,7 @@
 <body>
     <h1>Photo Booth</h1>
     <div id="mobile-message" style="display:none;">
-        <div>Rotate phone for landscape pictures🔄</div>
+        <div>Rotate phone to prevent distortion🔄</div>
         <div>Use on computer to access filters💻</div>
     </div>
     <div id="container">
