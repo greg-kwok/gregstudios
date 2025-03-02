@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Booth</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #F0EAD6; }
+        #container { display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 0px; }
+        #video-container { position: relative; display: flex; flex-direction: column; align-items: center; }
+        #controls { display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 10px; }
+        #photo-strip { display: flex; flex-direction: row; justify-content: center; margin-top: 20px; }
+        video { width: 640px; height: 480px; transform: scaleX(-1); border: 3px solid black; border-radius: 5px; }
+        .photo { width: 160px; height: 120px; border: 5px solid white; margin: 0px; padding: 5px; background-color: white; position: relative; }
+        button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
+        #countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 72px;
+            font-weight: bold;
+            color: rgba(255, 0, 0, 0.607);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            cursor: pointer;
+            margin: 5px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .filter-btn:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+    </style>
+</head>
+<body>
+    <h1>Photo Booth</h1>
+    <div id="mobile-message" style="display:none;">
+        <div>Rotate phone to prevent distortion🔄</div>
+        <div>Use on computer to access filters💻</div>
+    </div>
+    <div id="container">
+        <div id="video-container">
+            <video id="video" autoplay muted playsinline></video>
+            <div id="countdown"></div>
+            <div id="controls">
+                <div id="filter-controls" style="display:none;">
+                    <button class="filter-btn" onclick="applyFilter('none')">Normal</button>
+                    <button class="filter-btn" onclick="applyFilter('brightness(150%)')">Ring Light</button>
+                    <button class="filter-btn" onclick="applyFilter('contrast(150%)')">Contrast</button>
+                    <button class="filter-btn" onclick="applyFilter('grayscale(100%)')">Grayscale</button>
+                    <button class="filter-btn" onclick="applyFilter('sepia(100%)')">Sepia</button>
+                    <button class="filter-btn" onclick="applyFilter('invert(100%)')">Invert</button>
+                    <button class="filter-btn" onclick="applyFilter('saturate(250%)')">Childhood</button>
+                    <button class="filter-btn" onclick="applyFilter('hue-rotate(90deg)')">Hulk</button>
+                </div>
+                <button id="capture" onclick="startCapture()">Start Capture</button>
+            </div>
+            <div id="photo-strip"></div>
+        </div>
+    <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+    <script src="js/index.js"></script>
+</body>
+</html>

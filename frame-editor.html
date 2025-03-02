@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frame Editor</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #F0EAD6; }
+        #frame-preview { display: flex; flex-direction: column; align-items: center; background-color: #F0EAD6; }
+        .photo { width: 320px; border: 15px solid white; margin: 0px; padding: 0px; background-color: white;  }
+        button { margin: 10px; padding: 10px; cursor: pointer; font-size: 16px; border-radius: 5px; }
+        #qr-code-container {display: flex; justify-content: center; align-items: center;  }
+    </style>
+</head>
+<body>
+    <h1>Frame Editor</h1>
+    <div>
+        <label for="colorPicker">Pick a frame color:</label>
+        <input type="color" id="colorPicker" value="#FFFFFF" onchange="changeFrameColor(this.value)">
+    </div>
+    <button onclick="downloadStrip()">📥Download</button>
+    <button onclick="retakePhotos()">🔄Retake</button>
+    <button id="QrButton" onclick="generateQRCode()" style="display: inline-block;">#️⃣QR Code to Save to Phone</button>
+    <div id="qr-code-container"></div>
+    <div id="frame-preview"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script src="js/frame-editor.js"></script>
+</body>
+</html>
